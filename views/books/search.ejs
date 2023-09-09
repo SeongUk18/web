@@ -1,0 +1,22 @@
+<div class="row my-5">
+    <div class="col">
+        <h1 class="text-center">도서 검색</h1>
+    </div>
+</div>
+
+<script>
+    getBooks();
+    //도서검색 목록 가져오기
+    function getBooks(){
+        $.ajax({
+            type: "get",
+            url: "https://dapi.kakao.com/v3/search/book?target=title",
+            headers: {"Authorization":"KakaoAK f6a81be672c42fe6915eb8f1ef27320c"},
+            data : {query:'노드', page:1, size:10},
+            success: function(data){
+                console.log(data);
+            }
+
+        });
+    }
+</script>
