@@ -2,7 +2,6 @@
 <html>
   <head>
     <title><%= title %></title>
-    <!-- <%= %> 변수 값 출력할때 사용-->
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
@@ -10,13 +9,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
   </head>
   <body>
-    <!-- <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p> -->
-    <div class="container">
+    <div class ="container">
     <%-include('header.ejs')%>
-    <!--외부파일 가져오는법(서버 명령어) : ejs파일이기 때문에 html+서버 명령어 사용가능-->
     <%-include(pageName)%>
-    <!-- <%-include('home.ejs')%> -->
     <%-include('footer.ejs')%>
   </div>
   </body>

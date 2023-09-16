@@ -21,7 +21,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-// '/' -> 홈페이지를 의미함
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
 
