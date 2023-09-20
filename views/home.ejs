@@ -21,7 +21,8 @@
         </div>
     </div>
 </div>
-<!--도서검색 템플릿-->
+<!--도서검색 템플릿 
+{{}} 핸들바 명령문-->
 <script type="x-handlebars-template" id="temp_books">
     {{#each documents}}
     <div class="col-6 col-md-4 col-lg-2 mb-3">
@@ -56,11 +57,13 @@
 </script>
 
 <script>
+    //frm에 query값 가져오기
     let query=$(frm.query).val();
     let page=1;
     getBooks();
     $(frm).on("submit", function(e){  //name은 아무것도 안붙음 class는 #
         e.preventDefault();
+        // searchQuery 값 다시 가져오기
         query=$(frm.query).val();
         page=1
         getBooks();
