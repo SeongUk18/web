@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var booksRouter = require('./routes/books');
+// router 지정 -> path가 뭐일때 뭘 하겠다. (컨트롤러)
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use('/', indexRouter);
 // '/' -> 홈페이지를 의미함
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
+app.use('/locals', require('./routes/locals'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

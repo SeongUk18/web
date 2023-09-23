@@ -1,3 +1,9 @@
+<style>
+    #div_books img{
+        cursor: pointer;
+    }
+</style>
+
 <div class ="row my-5">
     <div class = "col">
         <!--검색폼-->
@@ -28,7 +34,7 @@
     <div class="col-6 col-md-4 col-lg-2 mb-3">
         <div class="card"> 
             <div class="card-body">
-                <img src ="{{check thumbnail}}" width="90%">
+                <img src ="{{check thumbnail}}" width="90%" index="{{@index}}">
                 <div class="ellipsis pt-3" style="font-size:0.8rem;">
                     {{title}}
                 </div>
@@ -38,6 +44,7 @@
             </div>
         </div>
     </div>
+    <%-include('books/modal.ejs')%>
     {{/each}}
 
 </script>
@@ -61,7 +68,16 @@
     let query=$(frm.query).val();
     let page=1;
     getBooks();
-    $(frm).on("submit", function(e){  //name은 아무것도 안붙음 class는 #
+
+    //이미지를 클릭한 경우
+    $("#div_books").on("click", "img", function(){
+        let index = $(this).attr("index") 
+        //this -> img를 의미, attr -> attribute 의미함
+        //alert('00');
+        $("#modal" + index).modal("show");
+    });
+
+    $(frm).on("submit", function(e){  //name은 아무것도 안붙음 class는 . id:#
         e.preventDefault();
         // searchQuery 값 다시 가져오기
         query=$(frm.query).val();
