@@ -25,12 +25,12 @@
     </div>
 </div>
 
-<script type="module">
+<script type="module"> // import하기 위해 설정해줘야됨
     import {app} from "/javascripts/firebase.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
         
     const auth = getAuth(app);
-
+    // name에는 앞에 안붙음 따움표도 없음 #은 아이디
     $(frm).on("submit", function(e){
         e.preventDefault();
         //유효성 체크
@@ -50,12 +50,14 @@
                 console.log(success);
                 alert("로그인 성공")
                 sessionStorage.setItem("email", email);
+                
                 sessionStorage.setItem("uid", success.user.uid);
                 location.href="/";
+                
             }).catch(error => {
                 console.log(error);
             })
         }
-
+        
     });
 </script>

@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 // '/' -> 홈페이지를 의미함
+// 라우터 설정
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
 app.use('/locals', require('./routes/locals'));
