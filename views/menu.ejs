@@ -21,6 +21,10 @@
           <li class="nav-item" id="cart" style="display: none;">
           <a class="nav-link active" aria-current="page" href="/books/cart">장바구니</a>
         </li>
+      </li>
+      <li class="nav-item" id="favorite" style="display: none;">
+      <a class="nav-link active" aria-current="page" href="/locals/favorite">즐겨찾기</a>
+    </li>
         
       </ul>
       <ul class="navbar-nav d-flex">
@@ -41,7 +45,7 @@
 <script>
   if(sessionStorage.getItem("email")){
     // email에 a 태그를 의미 -> 태그는 안붙음 클레스는 .
-    $("#login, #email, #logout, #cart").toggle();
+    $("#login, #email, #logout, #cart, #favorite").toggle();
     $("#email a").html(sessionStorage.getItem("email"));
   } 
 

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row my-5">
     <div class="col">
         <h1 class="text-center">지역검색</h1>
         <!--검색폼-->
@@ -11,19 +11,21 @@
             </form>
         </div>
         <div id="div_locals"></div>
-        <!--페이지 이동 버튼-->
+
+        <!--페이지 이동버튼-->
         <div class="text-center">
-            <button id="prev" class="btn btn-primary">이전</button>
-            <span id="span_page" class ="mx-3">1/10</span>
+            <button id="prev" class="btn btn-primary">이전</button> <!--id는 중복되면 안됨-->
+            <span id="span_page" class="mx-3">1/10</span> <!--한줄로 표시할거라서 span-->
             <button id="next" class="btn btn-primary">다음</button>
         </div>
+
         <!--지도출력-->
-        <div id="map" style="width:100%;height:400px;" class="my-5"></div>
+        <div id="map" style="width:100%;height:400px;"></div>
     </div>
 </div>
 
-<!--템플릿-->
-<script type="x-handlebars-template" id="temp_locals">
+<!--템플릿--><!-- attr는 속성값을 부를 때 사용 -->
+<script type="x-handlebars-template", id="temp_locals">
     <table class="table table-striped">
         {{#each documents}}
         <tr>
@@ -31,58 +33,103 @@
             <td>{{address_name}}</td>
             <td>{{phone}}</td>
             <td><button class="btn btn-primary" x="{{x}}" y="{{y}}">위치보기</button></td>
+            <td><button class="btn btn-primary btn-sm favorite" local="{{toString @this}}">즐겨찾기</button></td>
         </tr>
         {{/each}}
     </table>
 </script>
 
-
+<!--object를 string으로 변환하는 함수-->
 <script>
+    Handlebars.registerHelper("toString", function(local){
+        return JSON.stringify(local);
+    });
+</script>
+
+<script type="module">
+    import { app } from "/javascripts/firebase.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    const db=getDatabase(app);
+
     let query=$(frm.query).val();
     let page=1;
     let size=5;
-    getLocals();
-    //위치보기 버튼을 눌렀을 때,
-    $("#div_locals").on("click", "button", function(){
-        let x = $(this).attr("x");
-        let y = $(this).attr("y");
-        var container = document.getElementById('map');
-		var options = {
-			center: new kakao.maps.LatLng(y, x),
-			level: 3
-		};
 
-		var map = new kakao.maps.Map(container, options);
+    getLocals();
+    //즐겨찾기 버튼을 클릭한 경우
+    $('#div_locals').on("click", ".favorite", async function(){
+        if(sessionStorage.getItem("email")){
+            const local=JSON.parse($(this).attr("local")); // this = .favorite버튼
+            console.log(local);
+            const ref_favorite = ref(db, `favorite/${sessionStorage.getItem("uid")}/${local.id}`);
+            const snapshot = await get(ref_favorite);
+            if(snapshot.val()){
+                alert("즐겨찾기에 이미 등록되었습니다! 바보야!")
+            }else{
+                await set(ref_favorite, local)
+                alert("즐겨찾기에 등록되었습니다.")
+            }
+        }else{
+            sessionStorage.setItem("target", "/locals") //돌아갈 곳 지정
+            location.href="/users/login"
+        }
+       
+    });
+
+    //위치보기 버튼을 클릭한 경우
+    $("#div_locals").on("click", "button", function(){
+        let x=$(this).attr("x");
+        let y=$(this).attr("y");
+
+        var container = document.getElementById('map');
+      var options = {
+         center: new kakao.maps.LatLng(y, x),
+         level: 3
+      };
+      var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
         var markerPosition  = new kakao.maps.LatLng(y, x);  // 마커가 표시될 위치입니다 
         var marker = new kakao.maps.Marker({  // 마커를 생성합니다
             position: markerPosition
         });
         marker.setMap(map);  // 마커가 지도 위에 표시되도록 설정합니다
 
+        let row = $(this).parent().parent();
+        let place = row.find(".place").text();
+        let phone = row.find(".phone").text();
+        var str ="<div style='padding:5px;font-size:12px;'>" + place + "<br>" + phone + "</div>";
+        var info=new kakao.maps.InfoWindow({ content:str });
+        kakao.maps.event.addListener(marker, "mouseover", function() { 
+            info.open(map, marker); 
+        });
+        kakao.maps.event.addListener(marker, "mouseout", function() {
+            info.close(map, marker); 
+        });
     });
 
-    $(frm).on("submit", function(e){
-        e.preventDefault();
-        query = $(frm.query).val();
-        page = 1;
+    $(frm).on("submit", function(event){
+        event.preventDefault();
+        query=$(frm.query).val();
+        page=1;
         getLocals();
     });
 
     $("#prev").on("click", function(){
         page--;
         getLocals();
-    });
+    })
 
     $("#next").on("click", function(){
         page++;
         getLocals();
-    });
+    })
+
 
     function getLocals(){
         $.ajax({
-            type:"get",
-            url:"https://dapi.kakao.com/v2/local/search/keyword.json",
-            headers:{"Authorization":"KakaoAK 73de3d69833f8e6d6e5900a43c99b7b2"},
+            type : "get",
+            url : "https://dapi.kakao.com/v2/local/search/keyword.json",
+            headers:{"Authorization" : "KakaoAK eff4cbe79b54f613f982dc7c7b0506db"},
             data:{query:query, page:page, size:size},
             success:function(data){
                 console.log(data);
@@ -91,12 +138,12 @@
                 $("#div_locals").html(html);
 
                 let last = Math.ceil(data.meta.pageable_count/size);
-                $("#span_page").html(page + "/" + last);
-                if(page==1) $("#prev").attr("disabled",true)
-                else $("#prev").attr("disabled",false)
 
-                if(data.meta.is_end) $("#next").attr("disabled",true)
-                else $("#next").attr("disabled",false)
+                $("#span_page").html(page + "/" + last);
+                if(page==1) $("#prev").attr("disabled", true)
+                else $("#prev").attr("disabled", false)
+                if(page==last) $("#next").attr("disabled", true)
+                else $("#next").attr("disabled", false)
             }
         })
     }

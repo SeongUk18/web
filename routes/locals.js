@@ -8,4 +8,9 @@ router.get('/', function(req, res, next) {
   // index.ejs 파일 랜더링한다는 의미, title : 탭에 나오는 이름
 });
 
+//즐겨찾기 페이지
+router.get('/favorite', function(req, res, next) {
+  res.render('index', { title: '즐겨찾기' ,pageName:'locals/favorite.ejs'});
+});
+
 module.exports = router;
