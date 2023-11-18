@@ -31,15 +31,17 @@
             $(frm.body).focus();
             return
         }
+        // if(title=='' || body==''){
+        //     alert("제목과 내용을 입력하세요!")
+        //     $(frm.title).focus();
+        //     return
+        // }
         if(confirm("새로운 게시글을 등록하실래요?")){
             // 게시글 등록
-            const date=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
             const email = sessionStorage.getItem("email");
+            const date=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
             await addDoc(collection(db, "posts"), {
-                email:email, 
-                title:title, 
-                body:body, 
-                date:date
+                date, email, title, body
             });
             alert("새로운 글이 등록되었습니다.")
             location.href="/posts";
